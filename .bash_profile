@@ -14,6 +14,9 @@ shopt -s cdspell;
 # Networking. IP address, dig, DNS
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
 
+# show hidden files starting with a dot, and sort
+alias ll='ls -lGaf'
+
 function man() {
     LESS_TERMCAP_mb=$'\e'"[1;31m" \
     LESS_TERMCAP_md=$'\e'"[1;31m" \
@@ -32,10 +35,6 @@ PATH="$PATH:$GOPATH/bin"
 
 
 # Python stuff
-source /usr/local/bin/virtualenvwrapper_lazy.sh
-export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3.6
-
 function venv() {
 	python3 -m venv $HOME/.venvs/$1;
 	chmod +x $HOME/.venvs/$1/bin/activate;
