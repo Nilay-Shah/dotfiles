@@ -1,0 +1,14 @@
+[alias]
+	b = branch
+	up = pull --rebase --autostash
+	co = checkout
+	cob = checkout -b
+
+# push easily. http://stackoverflow.com/a/23918418/89484
+[push]
+	default = current
+
+
+	
+[user]
+	email = Nilay-Shah@users.noreply.github.com
