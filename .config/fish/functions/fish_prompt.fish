@@ -1,0 +1,1 @@
+/Users/nilay/.local/share/omf/themes/sushi/fish_prompt.fish
