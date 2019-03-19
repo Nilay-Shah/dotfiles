@@ -1,1 +1,1 @@
-/Users/nilay/.local/share/omf/themes/sushi/fish_prompt.fish
+/Users/nilay/.local/share/omf/themes/spacefish/fish_prompt.fish
