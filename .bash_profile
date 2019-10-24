@@ -48,3 +48,4 @@ PATH=$PATH:~/usr/local/bin
 
 export PATH
 
+if [ -e /Users/nilay/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/nilay/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
