@@ -29,6 +29,10 @@ if not functions -q fisher
   fish -c fisher
 end
 
+# chruby-fish
+source /usr/local/share/chruby/chruby.fish
+source /usr/local/share/chruby/auto.fish
+
 
 # ---Shopify Specific---
 # dev
