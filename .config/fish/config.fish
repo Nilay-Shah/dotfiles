@@ -55,9 +55,9 @@ if not functions -q fisher
 end
 
 # chruby-fish
-source /usr/local/share/chruby/chruby.fish
-source /usr/local/share/chruby/auto.fish
-chruby 2.5.8
+#source /usr/local/share/chruby/chruby.fish
+#source /usr/local/share/chruby/auto.fish
+#chruby 2.5.8
 
 # ---Shopify Specific---
 # dev
