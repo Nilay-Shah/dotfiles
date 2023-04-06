@@ -7,9 +7,6 @@
 # push easily. http://stackoverflow.com/a/23918418/89484
 [push]
 	default = current
-
-
-	
 [user]
 	email = 5805831+Nilay-Shah@users.noreply.github.com
 [diff]
@@ -28,3 +25,6 @@
 [credential]
 	helper = 
 	helper = store --file /opt/dev/var/private/git_credential_store
+[url "git@gitlab.com:"]
+	insteadOf = http://gitlab.com
+	insteadOf = https://gitlab.com
