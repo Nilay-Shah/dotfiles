@@ -2,6 +2,11 @@ brew "bat"
 brew "starfish"
 brew "yadm"
 brew "jq"
+brew "mas"
 
 tap "shaunsingh/SFMono-Nerd-Font-Ligaturized"
 cask "font-sf-mono-nerd-font-ligaturized"
+
+
+mas "Magnet", id: 441258766
+mas "Amphetamine", id: 937984704
