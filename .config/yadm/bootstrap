@@ -1,0 +1,29 @@
+#!/bin/sh
+# inspo/borrowed from: https://github.com/DoomHammer/dotfiles/blob/master/.config/yadm/bootstrap
+
+install_brew() {
+  # install Homebrew if it's missing
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Installing Homebrew"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  fi
+
+  if [ -f "$HOME/.Brewfile" ]; then
+    echo "Updating Homebrew bundle"
+    brew bundle --global
+  fi
+}
+
+install_fonts() {
+  brew tap shaunsingh/SFMono-Nerd-Font-Ligaturized
+  brew install --cask font-sf-mono-nerd-font-ligaturized
+}
+
+set_default_terminal() {
+  echo /usr/local/bin/fish | sudo tee -a /etc/shells
+  chsh -s /usr/local/bin/fish
+}
+
+install_brew
+install_fonts
+set_default_terminal

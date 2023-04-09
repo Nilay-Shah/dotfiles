@@ -1,0 +1,7 @@
+brew "bat"
+brew "starfish"
+brew "yadm"
+brew "jq"
+
+tap "shaunsingh/SFMono-Nerd-Font-Ligaturized"
+cask "font-sf-mono-nerd-font-ligaturized"
