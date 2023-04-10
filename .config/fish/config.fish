@@ -1,6 +1,11 @@
 set -xg DISABLE_SPRING true
 set theme_complete_pathset yes
 
+# after homebrew 3.0.0, Intel & M1 macs have diff install prefixes. fix this
+# by supporting both (for now) by adding the new M1 mac install prefix to $PATH.
+# more info: https://brew.sh/2021/02/05/homebrew-3.0.0/
+set -x PATH $PATH /opt/homebrew/bin
+
 # chruby-fish
 #source /usr/local/share/chruby/chruby.fish
 #source /usr/local/share/chruby/auto.fish

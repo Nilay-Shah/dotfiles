@@ -1,5 +1,6 @@
+brew "fish"
 brew "bat"
-brew "starfish"
+brew "starship"
 brew "yadm"
 brew "jq"
 brew "mas"

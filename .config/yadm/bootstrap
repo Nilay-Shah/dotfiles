@@ -20,8 +20,9 @@ install_fonts() {
 }
 
 set_default_terminal() {
-  echo /usr/local/bin/fish | sudo tee -a /etc/shells
-  chsh -s /usr/local/bin/fish
+  where_is_fish=$(which fish)
+  echo $where_is_fish | sudo tee -a /etc/shells
+  chsh -s $where_is_fish
 }
 
 install_brew
