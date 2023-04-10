@@ -8,6 +8,9 @@ brew "mas"
 tap "shaunsingh/SFMono-Nerd-Font-Ligaturized"
 cask "font-sf-mono-nerd-font-ligaturized"
 
+tap "homebrew/cask"
+cask "flux"
 
 mas "Magnet", id: 441258766
 mas "Amphetamine", id: 937984704
+mas "Sequel Ace", id: 1518036000
