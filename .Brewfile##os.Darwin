@@ -11,6 +11,11 @@ cask "font-sf-mono-nerd-font-ligaturized"
 tap "homebrew/cask"
 cask "flux"
 
+# install gcloud but not on all machines..
+# brew install --cask google-cloud-sdk
+# tap "google-cloud-sdk"
+# cask "google-cloud-sdk"
+
 mas "Magnet", id: 441258766
 mas "Amphetamine", id: 937984704
 mas "Sequel Ace", id: 1518036000

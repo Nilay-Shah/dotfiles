@@ -21,7 +21,6 @@ end
 set -x GOPATH $HOME
 set -x PATH $PATH $GOPATH/bin
 
-# ---Shopify Specific---
 # kube
 if set -q KUBECONFIG[1]
   set -x KUBECONFIG "$KUBECONFIG:/Users/nilay/.kube/config:/Users/nilay/.kube/config.shopify.cloudplatform:/Users/nilay/.kube/config.shopify.production-registry"
@@ -39,7 +38,9 @@ export NVM_DIR="/usr/local/opt/nvm"
 # ---PocketHealth Specific---
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/nilay/google-cloud-sdk/path.fish.inc' ]; . '/Users/nilay/google-cloud-sdk/path.fish.inc'; end
+if test -e /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.fish.inc
+  source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.fish.inc
+end
 
 # init starship prompt: https://github.com/starship/starship
 starship init fish | source
