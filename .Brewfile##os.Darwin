@@ -10,6 +10,8 @@ cask "font-sf-mono-nerd-font-ligaturized"
 
 tap "homebrew/cask"
 cask "flux"
+cask "sublime-text"
+cask "visual-studio-code"
 
 # install gcloud but not on all machines..
 # brew install --cask google-cloud-sdk

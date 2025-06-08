@@ -62,9 +62,15 @@ export NVM_DIR="/usr/local/opt/nvm"
 # ---PocketHealth Specific---
 
 # The next line updates PATH for the Google Cloud SDK.
-if test -e /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.fish.inc
-  source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.fish.inc
+#if test -e /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.fish.inc
+#  source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.fish.inc
+#end
+
+# add just the mysql client to the CLI
+if test -e /usr/local/opt/mysql-client/bin
+  set -x PATH $PATH /usr/local/opt/mysql-client/bin
 end
 
 # init starship prompt: https://github.com/starship/starship
 starship init fish | source
+~/.local/bin/mise activate fish | source
