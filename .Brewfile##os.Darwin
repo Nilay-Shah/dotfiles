@@ -12,6 +12,7 @@ tap "homebrew/cask"
 cask "flux"
 cask "sublime-text"
 cask "visual-studio-code"
+cask "ghostyy" # experimental
 
 # install gcloud but not on all machines..
 # brew install --cask google-cloud-sdk
@@ -21,3 +22,11 @@ cask "visual-studio-code"
 mas "Magnet", id: 441258766
 mas "Amphetamine", id: 937984704
 mas "Sequel Ace", id: 1518036000
+mas "Slack", id: 803453959
+mas "WhatsApp Messenger", id: 310633997
+
+# TODO:
+# 	- obsidian # not official
+#	- chrome # not official
+#	- chat gpt # not official
+#	- claude # not official
