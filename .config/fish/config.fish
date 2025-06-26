@@ -73,4 +73,5 @@ end
 
 # init starship prompt: https://github.com/starship/starship
 starship init fish | source
-~/.local/bin/mise activate fish | source
+/opt/homebrew/opt/mise/bin/mise activate fish | source
+

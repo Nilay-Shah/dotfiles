@@ -4,15 +4,22 @@ brew "starship"
 brew "yadm"
 brew "jq"
 brew "mas"
+brew "mise"
+brew "mysql@8.4" # need older version for clear text pw. need to run `fish_add_path /opt/homebrew/opt/mysql@8.4/bin`
 
 tap "shaunsingh/SFMono-Nerd-Font-Ligaturized"
 cask "font-sf-mono-nerd-font-ligaturized"
 
-tap "homebrew/cask"
 cask "flux"
 cask "sublime-text"
 cask "visual-studio-code"
-cask "ghostyy" # experimental
+cask "ghostty" # experimental
+cask "obsidian"
+cask "google-chrome"
+cask "chatgpt"
+cask "claude"
+cask "spotify"
+# cask "windscribe" # this still needs to be manually installed after, so no point
 
 # install gcloud but not on all machines..
 # brew install --cask google-cloud-sdk
@@ -25,8 +32,3 @@ mas "Sequel Ace", id: 1518036000
 mas "Slack", id: 803453959
 mas "WhatsApp Messenger", id: 310633997
 
-# TODO:
-# 	- obsidian # not official
-#	- chrome # not official
-#	- chat gpt # not official
-#	- claude # not official
