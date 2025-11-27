@@ -3,6 +3,7 @@
 	up = pull --rebase --autostash
 	co = checkout
 	cob = checkout -b
+	mr-desc = "log --reverse origin/main..HEAD --pretty=format:'### %s: %h %n%b%n'"
 
 # push easily. http://stackoverflow.com/a/23918418/89484
 [push]
