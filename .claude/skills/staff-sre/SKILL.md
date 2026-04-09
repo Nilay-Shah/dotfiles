@@ -28,10 +28,9 @@ All other Superpowers skills (brainstorming, writing-plans, subagent-driven-deve
 ```dot
 digraph sre_pipeline {
     rankdir=TB;
-    brainstorm [label="1. Brainstorm\n(superpowers:brainstorming)", shape=box];
+    scope [label="1. Scope & Plan\n(scope-refine)", shape=box];
     adr [label="2. Check ADRs\nadr/ directory", shape=box];
-    plan [label="3. Write Plan\n(superpowers:writing-plans)", shape=box];
-    execute [label="4. Execute\n(superpowers:subagent-driven-development)", shape=box];
+    execute [label="3. Execute\n(superpowers:subagent-driven-development)", shape=box];
     security [label="5. Security Review", shape=box, style=filled, fillcolor="#ffcccc"];
     review [label="6. Code Review\n(superpowers:requesting-code-review)", shape=box];
     update [label="7. Update Codebase Map\nif interfaces changed", shape=box];
@@ -49,9 +48,34 @@ digraph sre_pipeline {
 - Will this work require a new architectural decision?
 - If yes: write the ADR as part of the plan (use MADR minimal template at `adr/0000-template.md`)
 
-## Step 4: Infrastructure Verification Cycle
+## Steps 1-2: Scope, Plan & ADRs
 
-This replaces the TDD Red-Green-Refactor cycle. For each task in the plan:
+Use the `scope-refine` skill for combined scoping and planning. Check `adr/` before planning — do existing ADRs constrain this work? If a new architectural decision is needed, write the ADR as part of the plan.
+
+## Step 3: Execute
+
+**Before writing any code:**
+1. Create bd issues from the plan tasks: `~/.claude/hooks/bd-create-from-plan.sh <scope-doc-path>` (or `bd create` manually)
+2. Verify issues and deps look right: `bd ready`
+
+**Choose execution mode:**
+
+- **Parallel (default for independent tasks):** Use the `execute-plan` skill. It dispatches one agent per ready issue in isolated worktrees. Each agent runs the infrastructure verification cycle (validate → plan → format) instead of TDD.
+
+- **Sequential (for tightly coupled tasks):** Claim the first ready task (`bd update <id> --claim`), then run the infrastructure verification cycle below. One task at a time.
+
+- **Manual verification tasks:** Some infra tasks need apply + manual validation (check AWS console, verify connectivity, test DNS). Agents implement and commit, but the human verifies after apply.
+
+**After each task — CHECKPOINT (mandatory):**
+1. Run verification (validate + plan clean, fmt passes) — or note that apply + manual verification is needed
+2. Show the user: `git diff --stat`, plan output summary, brief summary of what was done
+3. **Wait for user acknowledgment before continuing.** Do not claim the next task until the user confirms.
+4. If user flags an issue → fix it before proceeding
+5. Only then: `bd close <id>` and check `bd ready` for what's unblocked next
+
+## Infrastructure Verification Cycle
+
+This replaces the TDD Red-Green-Refactor cycle. For each task:
 
 ### VALIDATE — Check Syntax
 

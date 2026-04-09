@@ -37,13 +37,30 @@ digraph swe_pipeline {
 }
 ```
 
-## Steps 1-3: Use Superpowers As-Is
+## Steps 1-2: Scope & Plan
 
-These steps use existing Superpowers skills unchanged:
+Use the `scope-refine` skill which combines scoping and planning into one persistent doc. The output includes scope (in/out, success criteria) and implementation tasks (files, verification steps, PR breakdown).
 
-1. **Brainstorming** — `superpowers:brainstorming`. Design before code. Hard-gated: no code until design approved.
-2. **Writing Plans** — `superpowers:writing-plans`. Bite-sized TDD tasks with exact file paths, test code, and verification commands.
-3. **Execute with TDD** — `superpowers:subagent-driven-development` + `superpowers:test-driven-development`. Red-green-refactor. No exceptions. Follow commit conventions from `~/.claude/CLAUDE.md`.
+## Step 3: Execute with TDD
+
+**Before writing any code:**
+1. Create bd issues from the plan tasks: `~/.claude/hooks/bd-create-from-plan.sh <scope-doc-path>` (or `bd create` manually)
+2. Verify issues and deps look right: `bd ready`
+
+**Choose execution mode:**
+
+- **Parallel (default for independent tasks):** Use the `execute-plan` skill. It dispatches one agent per ready issue in isolated worktrees, manages checkpoints between batches, and respects task dependencies. Best when the plan has multiple independent tasks across PRs.
+
+- **Sequential (for tightly coupled tasks):** Claim the first ready task (`bd update <id> --claim`), then use `superpowers:test-driven-development`. Red-green-refactor. One task at a time.
+
+- **Manual verification tasks:** Some tasks require on-prem testing, UI validation, or checking external systems. Agents implement and commit, but the human verifies. The checkpoint gate handles this — the agent reports what it did, and the human tests before closing the issue.
+
+**After each task — CHECKPOINT (mandatory):**
+1. Run verification (tests green, linter clean) — or note that manual verification is needed
+2. Show the user: `git diff --stat`, test results, brief summary of what was done
+3. **Wait for user acknowledgment before continuing.** Do not claim the next task until the user confirms.
+4. If user flags an issue → fix it before proceeding
+5. Only then: `bd close <id>` and check `bd ready` for what's unblocked next
 
 ## Step 4: App Security Review
 
