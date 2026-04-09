@@ -1,143 +1,93 @@
 ---
 name: scope-refine
-description: Use when refining requirements, scoping work, or when a Linear/issue tracker ID is mentioned (e.g., AUTO-XXX). Produces a scope document, NOT code or plans.
+description: Use when scoping work, refining requirements, or when a Linear/issue tracker ID is mentioned (e.g., AUTO-XXX). Produces a persistent scope+plan document through Socratic questioning, then saves it for agents to reference.
 ---
 
-# Scope & Refine
+# Scope & Plan
 
-## Overview
-
-Understand the problem before solving it. This skill produces a refined scope document through Socratic questioning — not code, not a plan, not an implementation.
-
-**This skill runs BEFORE brainstorming.** Brainstorming assumes a clear scope. This skill creates that clarity.
+Understand the problem, then plan the solution. One skill, one output doc, persisted to disk.
 
 ## When to Use
 
-**Always when:**
-- User says "refine", "scope", or "let's think about"
-- A Linear/issue tracker ID is mentioned (e.g., AUTO-XXX)
-- Requirements are vague or ambiguous
-- Starting work on a new milestone or epic
-
-**Never when:**
-- Scope is already clear and user wants to start building
-- User explicitly says "skip scoping" or "just build it"
+- User says "scope", "plan", "let's think about", or "refine"
+- A Linear issue ID is mentioned (e.g., AUTO-XXX)
+- Requirements are vague or starting a new feature/epic
+- **Skip when:** User says "just build it" or scope is already clear
 
 ## Pipeline
 
-```dot
-digraph scope_pipeline {
-    rankdir=TB;
-    pull [label="1. Pull Issue Context", shape=box];
-    clarify [label="2. Socratic Clarification\n(one question at a time)", shape=box];
-    approaches [label="3. Propose Approaches\n(2-3 with tradeoffs)", shape=box];
-    scope [label="4. Output Scope Document", shape=box];
-    save [label="5. Save & Offer Next Steps", shape=box];
+1. **Pull context** — If issue ID detected, run `linear issue view AUTO-XXX`. Read the codebase map. Don't ask the user to paste things.
+2. **Socratic Qs** — One question at a time. 2-5 questions max. Ask about success criteria, interfaces, scope boundaries, constraints. Don't ask implementation details.
+3. **Propose approaches** — 2-3 options in a comparison table with a recommendation. If only one approach makes sense, say so.
+4. **Produce the doc** — After user picks an approach, output the combined scope+plan (template below).
+5. **Save to disk** — `~/.claude/projects/<project-path>/scopes/YYYY-MM-DD-<feature-name>.md`. Never save into the repo.
 
-    pull -> clarify -> approaches -> scope -> save;
-}
-```
-
-## Step 1: Pull Issue Context
-
-If an issue ID is detected in the prompt:
-
-```bash
-# Uses $ISSUE_TOOL from ~/.config/claude/workflow.env
-# Default: linear issue show AUTO-XXX
-$ISSUE_SHOW_CMD <issue-id>
-```
-
-If the command is available, pull the issue and inject its title, description, and labels as context. If not available or no issue ID, proceed with what the user provided.
-
-**Do NOT ask the user to paste the issue.** Pull it programmatically or work with what you have.
-
-## Step 2: Socratic Clarification
-
-**One question at a time.** Not a wall of questions. Not a numbered list.
-
-Ask the most important clarifying question, wait for the answer, then ask the next one based on what you learned. Stop when you have enough to propose approaches (usually 2-5 questions).
-
-**Good questions — scope & intent:**
-- "What does success look like for this?" (defines done)
-- "Who consumes the output of this?" (defines interface)
-- "What's the simplest version that would be useful?" (scopes MVP)
-- "What's explicitly out of scope?" (boundaries)
-
-**Good questions — technical constraints that change scope:**
-- "Does this need to be real-time or is batch acceptable?" (architecture driver)
-- "What scale are we designing for — 10 users or 10,000?" (complexity driver)
-- "Does this need to work across regions or single-region?" (infra scope)
-- "Is there an existing service/module this should extend vs. building new?" (build vs. extend)
-- "What auth/access model applies here — per-user, per-team, service-to-service?" (security scope)
-- "Are there compliance constraints — PHI, PII, audit logging?" (non-functional scope)
-
-**Bad questions:**
-- Pure implementation details ("Should we use Redis or Memcached?" — that's brainstorming)
-- Things you can answer by reading the codebase
-- Yes/no questions that don't reveal intent
-
-## Step 3: Propose Approaches
-
-Present 2-3 approaches in a comparison table:
+## Output Template
 
 ```markdown
-| Approach | Description | Pros | Cons |
-|----------|-------------|------|------|
-| A: ... | ... | ... | ... |
-| B: ... | ... | ... | ... |
-| C: ... | ... | ... | ... |
-
-**Recommendation:** Approach A, because ...
-```
-
-Always have a recommendation. Don't present options without an opinion.
-
-If there's only one reasonable approach, say so — don't invent alternatives for the sake of having options.
-
-## Step 4: Output Scope Document
-
-After the user picks an approach (or agrees with the recommendation), produce a scope document:
-
-```markdown
-# Scope: [Feature Name]
+# [Feature Name]
 
 **Issue:** [ID if available]
 **Goal:** [One sentence]
 **Approach:** [Chosen approach, 2-3 sentences]
 
-## In Scope
-- [Specific deliverable 1]
-- [Specific deliverable 2]
+## Scope
+### In Scope
+- [Deliverable 1]
+- [Deliverable 2]
 
-## Out of Scope
-- [Explicitly excluded thing 1]
-- [Explicitly excluded thing 2]
+### Out of Scope
+- [Excluded 1]
 
-## Open Questions
-- [Anything still unresolved — to be answered during brainstorming/planning]
+### Success Criteria
+Use [EARS patterns](https://alistairmavin.com/ears/) for unambiguous criteria:
+- [ ] When [trigger], the [system] shall [response]
+- [ ] While [state], when [action], the [system] shall [response]
 
-## Dependencies
-- [External dependencies: other teams, services, credentials needed]
+### Key Scenarios
+Use [Given/When/Then](https://cucumber.io/docs/gherkin/reference/) for concrete behavior (agents translate these directly to tests):
+```
+Given [precondition]
+When [action]
+Then [expected outcome]
 ```
 
-## Step 5: Save & Offer Next Steps
+## Plan
+### PR Breakdown
+1. **PR 1:** [Contents, what it enables]
+2. **PR 2:** [Contents, dependencies]
 
-Save the scope document to `docs/scopes/YYYY-MM-DD-<feature-name>.md` (create the directory if needed).
+### Tasks
+For each PR, the implementation steps:
 
-Then offer:
+#### PR 1: [Name]
+- [ ] Task 1 — files to touch, what to do, how to verify
+- [ ] Task 2 — files to touch, what to do, how to verify
 
-**"Scope saved to `docs/scopes/<filename>.md`. Next steps:**
-1. **Brainstorm** — I'll use superpowers:brainstorming to design the implementation
-2. **Defer** — Save this for later, pick it up in another session
-3. **Refine more** — Keep scoping if things are still unclear
+#### PR 2: [Name]
+- [ ] Task 3 — depends on Task 1
+- [ ] Task 4
 
-**Which one?"**
+## Open Questions
+- [Unresolved items]
 
-## Hard Rules
+## Dependencies
+- [External: teams, services, credentials]
+```
 
-- **No code.** Not even pseudocode. This is about WHAT, not HOW.
-- **No plans.** Plans come from superpowers:writing-plans after brainstorming.
-- **No implementation opinions.** "Use library X" is brainstorming territory, not scoping.
-- **One question at a time.** Walls of questions overwhelm. Be conversational.
-- **Always have an opinion.** Don't present options without a recommendation.
+## After Saving
+
+Offer:
+1. **Execute** — Create bd issues from the tasks: `~/.claude/hooks/bd-create-from-plan.sh <saved-scope-doc-path>`, then start working
+2. **Defer** — Pick this up in another session
+3. **Refine** — Keep iterating
+
+Do NOT auto-chain into anything. This is a checkpoint.
+
+## Rules
+
+- One question at a time. Be conversational.
+- Always have a recommendation.
+- Success criteria must be verifiable commands/outcomes, not "works correctly."
+- Tasks must name specific files and verification steps.
+- No code in this doc — implementation details go in the code, not the plan.
