@@ -1,5 +1,7 @@
 # ph-conductor/infrastructure
 
+**Use the codebase map below BEFORE exploring the repo.** It tells you where everything lives. Don't burn tokens with Glob/Grep to find things that are already mapped here.
+
 ## Workflow
 Always use the staff-sre skill. Never invoke TDD workflows.
 Read `adr/` before proposing architectural changes. Create new ADRs for architectural decisions.

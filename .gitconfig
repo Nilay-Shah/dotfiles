@@ -31,3 +31,5 @@
 	insteadOf = https://gitlab.com
 [rerere]
 	enabled = true
+[url "git@github.com-ph:ph-conductor/"]
+	insteadOf = https://github.com/ph-conductor/

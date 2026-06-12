@@ -1,5 +1,7 @@
 # ph-conductor/conductor
 
+**Use the codebase map below BEFORE exploring the repo.** It tells you where everything lives. Don't burn tokens with Glob/Grep to find things that are already mapped here.
+
 ## Workflow
 Always use the staff-swe skill. Use TDD for all application code.
 Run `nx affected` to scope test/lint/build to changed code.
@@ -10,7 +12,7 @@ Run `nx affected` to scope test/lint/build to changed code.
 - **Orchestrator:** Nx 22.5 (Python + TypeScript)
 - **Python:** uv, FastAPI, Temporal workers, pytest, mypy, ruff
 - **TypeScript:** pnpm, React 19, TanStack Router/Query, Rsbuild + Module Federation
-- **CI:** GitHub Actions + Graphite CI optimizer → ArgoCD/K8s deploy
+- **CI:** GitHub Actions → ArgoCD/K8s deploy
 
 ### Apps (`apps/`)
 

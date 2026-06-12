@@ -75,3 +75,6 @@ end
 starship init fish | source
 /opt/homebrew/opt/mise/bin/mise activate fish | source
 
+
+# uv
+fish_add_path "/Users/nilay/.local/bin"

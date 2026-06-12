@@ -1,4 +1,7 @@
 {
+  "permissions": {
+    "defaultMode": "auto"
+  },
   "hooks": {
     "PostToolUse": [
       {
@@ -34,6 +37,10 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "av-cli@aviator-plugins": true
@@ -45,5 +52,7 @@
         "repo": "aviator-co/agent-plugins"
       }
     }
-  }
+  },
+  "effortLevel": "xhigh",
+  "skipAutoPermissionPrompt": true
 }

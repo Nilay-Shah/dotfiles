@@ -36,9 +36,15 @@ git worktree remove ../project-feature-name
 - `av branch <name>` to create stacked branches
 - `av commit -m "msg"` instead of `git commit` (auto-restacks children)
 - `av pr --draft --title "..." --body "..."` to create PRs (always draft unless told otherwise)
-- `av sync --push=yes --prune=yes` to sync stacks
-- `av sync --push=yes --prune=yes --rebase-to-trunk` to fetch latest main and rebase the stack onto it (use this instead of manual `git pull origin main` + `git rebase main`)
-- After PR merges: `av sync --all --push=no --prune=yes`
+- `av sync --push=yes --prune=yes` to sync a healthy stack (no merged branches still in the chain)
+- `av sync --push=yes --prune=yes --rebase-to-trunk` to pull latest main into a healthy stack. **Never run this while a merged branch is still in the stack** — it replays the merged commits onto a main that already has them squashed = conflict storm.
+- **After the bottom of a stack is squash-merged** (GitHub retargets the next PR to main; av.db doesn't notice):
+  1. `git fetch origin --prune`
+  2. `av switch <next-branch-down>`
+  3. `av reparent --parent main` — fixes metadata and rebases; patch-id detection drops the now-squashed commits.
+  4. `av sync --all --push=no --prune=yes` to delete the merged branch locally.
+  5. `av pr` (single branch) or `av sync --push=yes --prune=yes` (still stacked) to force-push.
+- **Diagnostic when av seems broken:** `cat "$(git rev-parse --git-common-dir)/av/av.db"`. If any `parent.name` points to a MERGED PR, do the reparent dance above — don't reach for more `av sync` variants.
 
 **Absorbing fixups into earlier commits:** Use `git absorb` when fixes need to land in specific earlier commits rather than as new commits. It auto-matches hunks to the right commit. Prefer `git absorb` over creating new fixup commits on stacked branches — it avoids restack conflicts by amending the right commit directly.
 
@@ -88,6 +94,26 @@ Types: `feat` `fix` `refactor` `test` `docs` `chore` `ci` `perf` `build` `revert
 2. Run linter if configured
 3. Flag any uncertainty or assumptions made
 4. Verify PR stays under 400 lines — split if not
+5. Self-review the staged diff (see below) — catch your own smells before CodeRabbit does
+
+## Self-review before commit
+
+Re-read the staged diff (`git diff --staged`) before any non-trivial commit. The smells that keep slipping through if I don't pause:
+
+- **Single-letter loop vars** (`p`, `r`, `i`, `e`, `ca`) in comprehensions or `except` blocks — repo rule, no exceptions
+- **Task-graph rot in comments** — `T<digit>`, "Theme N", "Stack N", scope-doc paths, external issue numbers (`#5150`, AUTO-XXX). They're correct today and meaningless next month
+- **Comments naming classes / files / specialists I just deleted** — grep my diff for the names of anything in the delete-list and scrub the survivors
+- **Comments narrating the code below them** — if the function is `_speak_greeting` and the comment is "speaks the greeting", delete the comment
+- **Variable referenced outside the branch that defined it** — mentally trace every code path before assuming a name is in scope
+- **Sibling code paths with mismatched instrumentation** — if the success path records an outcome / tool_call event, the FAILED and timeout paths must too. Asymmetry hides incidents
+- **PHI in log args without redaction** — `patient_id`, full names, DOB, phone numbers, OHIP / health-card. Log only outcome-shape (`success: bool`, `count: int`); route any unavoidable PHI through `shared.logging`'s redactor
+- **LLM behaviour gated by prompt rules where a state check would be deterministic** — Haiku ignores prompts under load. If correctness depends on the model following an instruction, replace it with a tool-side state check or a typed gate
+- **AgentTask / specialist coupling re-introduced** — IDI's pivot was AWAY from mid-call `return Agent(...)` handoffs. Don't add new ones; speak-then-transition is the pattern
+- **New deps added casually** — pinned versions exist for a reason (Temporal sandbox, livekit-agents API drift, Bedrock model versions). Justify in the commit body if adding
+
+If anything looks off, fix it in place before committing — don't ship for CodeRabbit to catch.
+
+For commits >50 LoC of substantive change, dispatch the `pr-review-toolkit:code-reviewer` subagent on the staged diff and apply its findings before the actual commit. Cheap insurance.
 
 ## After Completing Work
 
