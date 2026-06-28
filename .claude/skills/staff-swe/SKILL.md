@@ -25,15 +25,14 @@ Application code gets tested. Every feature, every bugfix, every behavior change
 ```dot
 digraph swe_pipeline {
     rankdir=TB;
-    brainstorm [label="1. Brainstorm\n(superpowers:brainstorming)", shape=box];
-    plan [label="2. Write Plan\n(superpowers:writing-plans)", shape=box];
-    execute [label="3. Execute with TDD\n(superpowers:subagent-driven-development)\n+ (superpowers:test-driven-development)", shape=box];
+    scope [label="1-2. Scope & Plan\n(scope-refine)", shape=box];
+    execute [label="3. Execute\n(execute-plan: architect → contract gate\n→ fanout-implement → triage)", shape=box];
     security [label="4. App Security Review", shape=box, style=filled, fillcolor="#ffcccc"];
-    review [label="5. Code Review\n(superpowers:requesting-code-review)", shape=box];
+    review [label="5. Code Review\n(workflow pre-PR review + app-specific)", shape=box];
     update [label="6. Update Codebase Map\nif interfaces changed", shape=box];
     finish [label="7. Finish Branch", shape=box];
 
-    brainstorm -> plan -> execute -> security -> review -> update -> finish;
+    scope -> execute -> security -> review -> update -> finish;
 }
 ```
 
@@ -41,26 +40,15 @@ digraph swe_pipeline {
 
 Use the `scope-refine` skill which combines scoping and planning into one persistent doc. The output includes scope (in/out, success criteria) and implementation tasks (files, verification steps, PR breakdown).
 
-## Step 3: Execute with TDD
-
-**Before writing any code:**
-1. Create bd issues from the plan tasks: `~/.claude/hooks/bd-create-from-plan.sh <scope-doc-path>` (or `bd create` manually)
-2. Verify issues and deps look right: `bd ready`
+## Step 3: Execute
 
 **Choose execution mode:**
 
-- **Parallel (default for independent tasks):** Use the `execute-plan` skill. It dispatches one agent per ready issue in isolated worktrees, manages checkpoints between batches, and respects task dependencies. Best when the plan has multiple independent tasks across PRs.
+- **Parallel (default — 2+ independent tasks):** Use the `execute-plan` skill. It architects a shared contract (you gate it), fans out one implementer per work-item in isolated worktrees via the `fanout-implement` workflow, verifies each against the contract, merges, tests, and runs a pre-PR review — then you triage. No bd. The contract gate + triage gate are the human checkpoints; you don't babysit per-task.
 
-- **Sequential (for tightly coupled tasks):** Claim the first ready task (`bd update <id> --claim`), then use `superpowers:test-driven-development`. Red-green-refactor. One task at a time.
+- **Sequential (single tightly-coupled change):** Skip the fan-out — use `superpowers:test-driven-development` directly. Red-green-refactor.
 
-- **Manual verification tasks:** Some tasks require on-prem testing, UI validation, or checking external systems. Agents implement and commit, but the human verifies. The checkpoint gate handles this — the agent reports what it did, and the human tests before closing the issue.
-
-**After each task — CHECKPOINT (mandatory):**
-1. Run verification (tests green, linter clean) — or note that manual verification is needed
-2. Show the user: `git diff --stat`, test results, brief summary of what was done
-3. **Wait for user acknowledgment before continuing.** Do not claim the next task until the user confirms.
-4. If user flags an issue → fix it before proceeding
-5. Only then: `bd close <id>` and check `bd ready` for what's unblocked next
+- **Manual-verification tasks** (on-prem, UI, external systems): the implementer commits; the workflow flags it; you verify at the triage gate before merging.
 
 ## Step 4: App Security Review
 

@@ -12,7 +12,7 @@ Understand the problem, then plan the solution. One skill, one output doc, persi
 - User says "scope", "plan", "let's think about", or "refine"
 - A Linear issue ID is mentioned (e.g., AUTO-XXX)
 - Requirements are vague or starting a new feature/epic
-- **Skip when:** User says "just build it" or scope is already clear
+- **Skip when:** the change fits in one sentence / is a single-file or trivial diff; the user says "just build it"; or scope is already clear. Plan-first is for multi-file, uncertain, or unfamiliar work — for a one-liner it's pure overhead.
 
 ## Pipeline
 
@@ -78,7 +78,7 @@ For each PR, the implementation steps:
 ## After Saving
 
 Offer:
-1. **Execute** — Create bd issues from the tasks: `~/.claude/hooks/bd-create-from-plan.sh <saved-scope-doc-path>`, then start working
+1. **Execute** — hand the saved doc to `execute-plan` (architect → contract gate → fan-out → triage), or for a single tightly-coupled change, build it directly with TDD
 2. **Defer** — Pick this up in another session
 3. **Refine** — Keep iterating
 

@@ -30,13 +30,13 @@ digraph sre_pipeline {
     rankdir=TB;
     scope [label="1. Scope & Plan\n(scope-refine)", shape=box];
     adr [label="2. Check ADRs\nadr/ directory", shape=box];
-    execute [label="3. Execute\n(superpowers:subagent-driven-development)", shape=box];
+    execute [label="3. Execute\n(execute-plan: architect → contract gate\n→ fanout-implement → triage)", shape=box];
     security [label="5. Security Review", shape=box, style=filled, fillcolor="#ffcccc"];
-    review [label="6. Code Review\n(superpowers:requesting-code-review)", shape=box];
+    review [label="6. Code Review\n(workflow pre-PR review + infra-specific)", shape=box];
     update [label="7. Update Codebase Map\nif interfaces changed", shape=box];
     finish [label="8. Finish Branch", shape=box];
 
-    brainstorm -> adr -> plan -> execute -> security -> review -> update -> finish;
+    scope -> adr -> execute -> security -> review -> update -> finish;
 }
 ```
 
@@ -54,24 +54,13 @@ Use the `scope-refine` skill for combined scoping and planning. Check `adr/` bef
 
 ## Step 3: Execute
 
-**Before writing any code:**
-1. Create bd issues from the plan tasks: `~/.claude/hooks/bd-create-from-plan.sh <scope-doc-path>` (or `bd create` manually)
-2. Verify issues and deps look right: `bd ready`
-
 **Choose execution mode:**
 
-- **Parallel (default for independent tasks):** Use the `execute-plan` skill. It dispatches one agent per ready issue in isolated worktrees. Each agent runs the infrastructure verification cycle (validate → plan → format) instead of TDD.
+- **Parallel (default — 2+ independent tasks):** Use the `execute-plan` skill. It architects a shared contract (you gate it), fans out one implementer per work-item in isolated worktrees via the `fanout-implement` workflow, then merges/tests/reviews — you triage. Each implementer runs the **infrastructure verification cycle (validate → plan → fmt)** instead of TDD; the architect names that method in the shared contract. No bd.
 
-- **Sequential (for tightly coupled tasks):** Claim the first ready task (`bd update <id> --claim`), then run the infrastructure verification cycle below. One task at a time.
+- **Sequential (single tightly-coupled change):** Skip the fan-out — run the infrastructure verification cycle below directly. One change at a time.
 
-- **Manual verification tasks:** Some infra tasks need apply + manual validation (check AWS console, verify connectivity, test DNS). Agents implement and commit, but the human verifies after apply.
-
-**After each task — CHECKPOINT (mandatory):**
-1. Run verification (validate + plan clean, fmt passes) — or note that apply + manual verification is needed
-2. Show the user: `git diff --stat`, plan output summary, brief summary of what was done
-3. **Wait for user acknowledgment before continuing.** Do not claim the next task until the user confirms.
-4. If user flags an issue → fix it before proceeding
-5. Only then: `bd close <id>` and check `bd ready` for what's unblocked next
+- **Manual-verification tasks** (apply + check AWS console / connectivity / DNS): the implementer commits; you verify after apply at the triage gate.
 
 ## Infrastructure Verification Cycle
 

@@ -1,0 +1,23 @@
+# yadm safety guard for ~/.claude — never version transcripts, credentials, or
+# machine-local state. Curated config stays trackable: skills/, workflows/, CLAUDE.md,
+# settings.json, and projects/**/memory/ + projects/**/scopes/.
+
+# Session transcripts + ephemeral session/run dirs (huge, PHI-bearing)
+projects/**/*.jsonl
+projects/*/[0-9a-f]*-[0-9a-f]*-*/
+projects/**/todos/
+
+# Credentials + per-machine settings
+.credentials.json
+.credentials.json.*
+settings.local.json
+**/settings.local.json
+policy-limits.json
+remote-settings.json
+
+# Caches / history / re-fetchable
+file-history/
+shell-snapshots/
+statsig/
+plugins/
+ide/
