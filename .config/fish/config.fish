@@ -70,3 +70,6 @@ starship init fish | source
 
 # uv
 fish_add_path "/Users/nilay/.local/bin"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/nilay/google-cloud-sdk/path.fish.inc' ]; . '/Users/nilay/google-cloud-sdk/path.fish.inc'; end
