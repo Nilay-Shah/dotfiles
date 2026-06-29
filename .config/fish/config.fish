@@ -73,3 +73,10 @@ fish_add_path "/Users/nilay/.local/bin"
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/nilay/google-cloud-sdk/path.fish.inc' ]; . '/Users/nilay/google-cloud-sdk/path.fish.inc'; end
+
+# pnpm
+set -gx PNPM_HOME "/Users/nilay/Library/pnpm"
+if not string match -q -- "$PNPM_HOME/bin" $PATH
+  set -gx PATH "$PNPM_HOME/bin" $PATH
+end
+# pnpm end
