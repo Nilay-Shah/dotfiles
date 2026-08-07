@@ -1,23 +1,38 @@
-# yadm safety guard for ~/.claude — never version transcripts, credentials, or
-# machine-local state. Curated config stays trackable: skills/, workflows/, CLAUDE.md,
-# settings.json, and projects/**/memory/ + projects/**/scopes/.
+# yadm safety guard for ~/.claude. THE DOTFILES REPO IS PUBLIC, so the test for anything here is
+# "would I post this to the internet", not "is this useful to keep".
+#
+# DEFAULT-DENY, deliberately. Claude Code and work installers both write new state into this
+# directory continuously — caches, session logs, paste buffers, config backups, telemetry, skill
+# symlinks — and an ignore list would have to grow to match. It never keeps up, and the failure
+# mode is publishing something private. So: ignore everything, then allow the handful of files I
+# actually curate. Anything new is private until I say otherwise.
+#
+# Notable things this keeps out, all of which a bare `yadm add -A .claude` would otherwise sweep:
+# paste-cache/ (arbitrary pasted content), history.jsonl, projects/**/ (transcripts + agent memory
+# carrying employer architecture), backups/ and settings.json.bak.* (UNFILTERED copies of settings,
+# so they bypass the clean filter), security/, sessions/, and work skill/tool symlinks.
 
-# Session transcripts + ephemeral session/run dirs (huge, PHI-bearing)
-projects/**/*.jsonl
-projects/*/[0-9a-f]*-[0-9a-f]*-*/
-projects/**/todos/
+# Ignore everything at this level.
+/*
 
-# Credentials + per-machine settings
-.credentials.json
-.credentials.json.*
-settings.local.json
-**/settings.local.json
-policy-limits.json
-remote-settings.json
+# Allow only these.
+!/.gitignore
+!/CLAUDE.md
+!/settings.json
+!/AI-SDLC.md
+!/workflows/
+!/skills/
 
-# Caches / history / re-fetchable
-file-history/
-shell-snapshots/
-statsig/
-plugins/
-ide/
+# Within skills/, allowlist my own. Work installers symlink theirs in here, so default-deny means
+# a newly shipped work skill is ignored without me having to notice it appeared.
+/skills/*
+!/skills/execute-plan/
+!/skills/git-pr-workflow/
+!/skills/scope-refine/
+!/skills/staff-sre/
+!/skills/staff-swe/
+
+# Belt for the two files that ARE tracked but get rewritten by a work installer: their unfiltered
+# backup copies must never be tracked, since they would leak what the clean filter strips.
+settings.json.bak.*
+CLAUDE.md.bak.*

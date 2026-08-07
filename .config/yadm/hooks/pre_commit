@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# yadm pre_commit guard: refuse to commit work-specific content to this PUBLIC dotfiles repo.
+#
+# This is the deterministic backstop behind the clean filters in ../filters/. Filters can be
+# bypassed (a missing .gitattributes, a `git add` from a shell where the filter is not
+# configured, a new file nobody thought to map); an exit-1 here cannot be missed. It inspects
+# the staged blobs, which are post-filter, so it also verifies the filters actually ran.
+#
+# The pattern list lives OUTSIDE this file, in an untracked sibling, because this hook is
+# itself versioned in the public repo — writing employer names here would leak exactly what
+# it exists to prevent.
+#
+# Fails CLOSED: no pattern file means no protection, and for a public repo that has to stop
+# the commit rather than pass silently. Override once with YADM_SKIP_LEAK_CHECK=1.
+set -uo pipefail
+
+PATTERN_FILE="${YADM_BLOCKED_PATTERNS:-$HOME/.config/yadm/blocked-patterns}"
+
+if [ "${YADM_SKIP_LEAK_CHECK:-}" = "1" ]; then
+  echo "pre_commit: leak check SKIPPED by YADM_SKIP_LEAK_CHECK=1" >&2
+  exit 0
+fi
+
+if [ ! -r "$PATTERN_FILE" ]; then
+  cat >&2 <<EOF
+pre_commit: BLOCKED - no pattern file at $PATTERN_FILE
+
+This repo is public and the leak guard has nothing to match against. Create the file with
+one extended-regex per line (employer names, internal hostnames, project prefixes), or
+override once with YADM_SKIP_LEAK_CHECK=1.
+EOF
+  exit 1
+fi
+
+# Strip comments and blanks, then OR the remaining patterns into one alternation.
+patterns="$(grep -vE '^[[:space:]]*(#|$)' "$PATTERN_FILE" | paste -sd '|' -)"
+if [ -z "$patterns" ]; then
+  echo "pre_commit: pattern file is empty; nothing to check against." >&2
+  exit 1
+fi
+
+git_dir="$(git rev-parse --git-dir 2>/dev/null)" || git_dir="$HOME/.local/share/yadm/repo.git"
+staged="$(git --git-dir="$git_dir" --work-tree="$HOME" diff --cached -U0 --no-color 2>/dev/null \
+  | grep -E '^(\+\+\+|\+)' | grep -vE '^\+\+\+')" || true
+
+hits="$(printf '%s\n' "$staged" | grep -inE "$patterns" | head -20)" || true
+
+if [ -n "$hits" ]; then
+  echo "pre_commit: BLOCKED - work-specific content in staged changes:" >&2
+  printf '%s\n' "$hits" | cut -c1-140 | sed 's/^/  /' >&2
+  cat >&2 <<EOF
+
+This dotfiles repo is PUBLIC. Either unstage the offending file, add it to a .gitignore,
+map it to a clean filter in ~/.gitattributes, or override once with YADM_SKIP_LEAK_CHECK=1.
+EOF
+  exit 1
+fi
+
+exit 0

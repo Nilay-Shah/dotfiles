@@ -26,9 +26,16 @@ Worktree create/cleanup commands → the `git-pr-workflow` skill (loads on deman
 
 ## PRs, Stacking & Worktrees
 
-Detail lives in the **`git-pr-workflow`** skill (loads on demand): the `av` stacking command dances (incl. the post-squash-merge reparent sequence + the `av.db` diagnostic), `git absorb`, `git rerere`, the PR description template, and the inline-review-comment practice.
+Detail lives in the **`git-pr-workflow`** skill (loads on demand): the `av` stacking command dances (incl. the post-squash-merge reparent sequence + the `av.db` diagnostic), `git absorb`, `git rerere`, worktree create/cleanup, and the inline-review-comment practice.
 
-Always-on defaults (kept here): PRs are **draft** + assigned to me (`--assignee nilay`); use `av` for stacked branch/PR ops; never push without approval (see Pushing & Publishing).
+Always-on defaults (kept here): PRs are **draft** + assigned to me (`--assignee Nilay-Shah` — the GitHub login; `nilay` silently no-ops); use `av` for stacked branch/PR ops; never push without approval (see Pushing & Publishing).
+
+PR **title and body** — decide by repo before writing either, don't guess. Test with `[ -f .github/workflows/trello_linker.yml ]`: that workflow is what enforces a card-linked title, so its presence *is* the condition.
+
+- **Present** — CI enforces a machine-parsed title. Use the work-provided PR authoring skill (installed into `~/.claude/skills`, and it self-describes as covering those repos); it owns the required title format and body shape.
+- **Absent** — my 3p / personal work. Use the template in **`git-pr-workflow`**. No title prefix, no card, since nothing enforces them there.
+
+The Conventional Commits format below applies to *commit messages* in either case, never to PR titles.
 
 ## Branch Naming
 
@@ -71,7 +78,7 @@ Re-read the staged diff (`git diff --staged`) before any non-trivial commit. The
 
 If anything looks off, fix it in place before committing — don't ship for CodeRabbit to catch.
 
-For commits >50 LoC of substantive change, dispatch the `pr-review-toolkit:code-reviewer` subagent on the staged diff and apply its findings before the actual commit. Cheap insurance.
+For commits >50 LoC of substantive change, run `/fv-code-review` on the staged diff and apply its findings before the actual commit. Cheap insurance. It routes to the specialized `fv-code-review-*` skills that apply and skips the rest — check its Coverage section, and re-run any reviewer that died mid-run rather than accepting the gap. Skip it for pure deletions and generated files; there is nothing for it to find.
 
 ## After Completing Work
 
@@ -116,3 +123,4 @@ Don't use teams for:
 - Be direct about tradeoffs and risks
 - Ask clarifying questions upfront rather than assuming
 - When stuck, explain what you've tried before asking for help
+

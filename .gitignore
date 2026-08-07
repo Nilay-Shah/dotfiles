@@ -1,0 +1,10 @@
+# yadm ignore rules for $HOME. THIS DOTFILES REPO IS PUBLIC — anything tracked here
+# is world-readable, so work-specific context must never enter it.
+
+# Issue-tracker caches: contain employer email addresses, internal ticket text, and
+# secret *paths* (not values). Per-project and re-fetchable, so never worth versioning.
+.beads/
+
+# Untracked: names the very strings the guard blocks, so it cannot be public.
+.config/yadm/blocked-patterns
+.config/yadm/private.env

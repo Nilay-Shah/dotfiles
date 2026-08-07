@@ -1,6 +1,6 @@
 ---
 name: git-pr-workflow
-description: Personal stacked-PR / worktree / PR-creation workflow with the av CLI — the av command dances (incl. the post-squash-merge reparent sequence + the av.db diagnostic), git absorb, git rerere, worktree create/cleanup, and the PR description template + inline-comment practice. Use when creating/stacking/restacking PRs, reparenting after a squash-merge, managing git worktrees, or writing a PR description.
+description: Personal stacked-PR / worktree / PR-creation workflow with the av CLI — the av command dances (incl. the post-squash-merge reparent sequence + the av.db diagnostic), git absorb, git rerere, worktree create/cleanup, and the inline-comment practice + a PR description template for personal and third-party repos. Use when creating/stacking/restacking PRs, reparenting after a squash-merge, or managing git worktrees. For PR title/body in a repo that has .github/workflows/trello_linker.yml, CI enforces a machine-parsed title, so defer to the work-provided PR authoring skill instead; this skill's template applies only where no such linter exists.
 ---
 
 # Git / PR / Stacking Workflow
@@ -39,9 +39,14 @@ git worktree remove ../project-feature-name
 
 ## PR Creation
 
-**Defaults:** Always create PRs as **draft**. Always assign to me (`--assignee nilay` or equivalent).
+**Scope check first.** If `.github/workflows/trello_linker.yml` exists, CI enforces a machine-parsed
+title on this repo: the title and body come from the work-provided PR authoring skill, and the
+template below does **not** apply. That workflow is what enforces the format, so its presence is the
+condition — not the org, not the remote name.
 
-**PR description template:**
+Draft + assignee defaults live in CLAUDE.md, not here, so there is one place to change them.
+
+**PR description template — personal / third-party repos only:**
 ```markdown
 ## Summary
 [2-3 bullet points: what changed and why]

@@ -1,5 +1,0 @@
-# Beads config — infrastructure repo (ph-conductor/infrastructure)
-# Data stored at ~/.beads/ph/infrastructure/, symlinked from repo .beads/
-
-beads:
-  role: contributor

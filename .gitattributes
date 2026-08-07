@@ -1,0 +1,10 @@
+# Clean filters for yadm. This dotfiles repo is PUBLIC, and these two files are rewritten by a
+# work installer on every update, so the stripping has to happen on every stage rather than once.
+# Filter bodies are in ~/.config/yadm/filters/; the strings they match on are in the untracked
+# ~/.config/yadm/private.env, so nothing work-specific lives in a tracked file.
+#
+# Clean-only, no smudge: the installer restores the content in the working tree, so a smudge
+# counterpart would fight it. Both are registered required=true, so a filter failure aborts the
+# stage rather than silently committing the unfiltered original.
+.claude/CLAUDE.md     filter=strip-managed-block
+.claude/settings.json filter=strip-managed-json
