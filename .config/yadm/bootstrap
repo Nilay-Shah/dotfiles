@@ -14,6 +14,27 @@ install_brew() {
   fi
 }
 
+# brew bundle runs `mas install`, which works only while App Store.app is signed in and only
+# for apps already in the Apple ID's history. mas 7 dropped `signin`, so a signed-out machine
+# skips every mas entry without a failure worth noticing.
+check_mas_apps() {
+  [ -f "$HOME/.Brewfile" ] || return 0
+  command -v mas >/dev/null 2>&1 || return 0
+
+  installed=$(mas list | awk '{print $1}')
+  missing=""
+
+  for app_id in $(sed -n 's/^mas .*id: *\([0-9][0-9]*\).*/\1/p' "$HOME/.Brewfile"); do
+    echo "$installed" | grep -qx "$app_id" || missing="$missing $app_id"
+  done
+
+  [ -n "$missing" ] || return 0
+
+  echo
+  echo "App Store apps missing after bundle:$missing"
+  echo "Sign in to App Store.app, then 'mas get <id>' the first time or 'mas install <id>' after."
+}
+
 install_fonts() {
   brew tap shaunsingh/SFMono-Nerd-Font-Ligaturized
   brew install --cask font-sf-mono-nerd-font-ligaturized
@@ -26,5 +47,6 @@ set_default_terminal() {
 }
 
 install_brew
+check_mas_apps
 install_fonts
 set_default_terminal
