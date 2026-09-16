@@ -45,12 +45,6 @@ end
 set -x GOPATH $HOME
 set -x PATH $PATH $GOPATH/bin
 
-# kube
-if set -q KUBECONFIG[1]
-  set -x KUBECONFIG "$KUBECONFIG:/Users/nilay/.kube/config:/Users/nilay/.kube/config.shopify.cloudplatform:/Users/nilay/.kube/config.shopify.production-registry"
-else
-  set -x KUBECONFIG "/Users/nilay/.kube/config:/Users/nilay/.kube/config.shopify.cloudplatform:/Users/nilay/.kube/config.shopify.production-registry"
-end
 # ---Shopify Specific---
 
 # The next line updates PATH for the Google Cloud SDK.

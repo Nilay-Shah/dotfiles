@@ -1,6 +1,7 @@
 {
+  "outputStyle": "Concise",
   "permissions": {
-    "defaultMode": "auto",
+    "allow": [],
     "deny": [
       "Bash(kubectl apply:*)",
       "Bash(kubectl attach:*)",
@@ -14,7 +15,7 @@
       "Bash(kubectl run:*)",
       "Bash(kubectl scale:*)"
     ],
-    "allow": []
+    "defaultMode": "auto"
   },
   "hooks": {
     "PostToolUse": [
@@ -40,14 +41,10 @@
     "typescript-lsp@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
-    "figma@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
     "plugin-dev@claude-plugins-official": true,
-    "slack@claude-plugins-official": true,
-    "sentry@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "notion@claude-plugins-official": true,
-    "notion-workspace-plugin@notion-plugin-marketplace": true
+    "gopls-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "aviator-plugins": {
@@ -60,12 +57,6 @@
       "source": {
         "source": "github",
         "repo": "anthropics/claude-plugins-official"
-      }
-    },
-    "notion-plugin-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "makenotion/claude-code-notion-plugin"
       }
     }
   },

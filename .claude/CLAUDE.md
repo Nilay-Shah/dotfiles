@@ -39,7 +39,7 @@ The Conventional Commits format below applies to *commit messages* in either cas
 
 ## Branch Naming
 
-Always prefix branches with `nil/` (e.g., `nil/feature-name`, `nil/fix-deploy-bug`).
+Always prefix branches with `nil-` (e.g., `nil-feature-name`, `nil-fix-deploy-bug`). Use a hyphen, not a slash: some repos tag Docker images with the branch name (`$BRANCH_NAME`), and a `/` is an invalid image-tag reference that fails the build.
 
 ## Commits
 
@@ -52,6 +52,11 @@ Types: `feat` `fix` `refactor` `test` `docs` `chore` `ci` `perf` `build` `revert
 - **NEVER add `Co-Authored-By` lines.**
 - One logical change per commit. Present tense. No trailing period.
 - Breaking changes: `feat!:` or `BREAKING CHANGE:` in footer.
+- **PR already open → every further change is its own commit.** Never amend or fold into an
+  existing one: reviewers need their comment threads to keep lining up with the diff, and a
+  force-push breaks that.
+- **No PR open → ask before committing.** A change arriving then usually means the plan moved
+  or something shifted mid-implementation, so confirm the shape before it is baked into history.
 
 ## Before Committing
 
@@ -88,7 +93,7 @@ Update the scope/plan doc if scope changed during implementation. Update the pro
 
 **NEVER push to origin or create PRs without explicit user approval.** Commits are local and safe — push freely there. But pushing, creating PRs, or any action visible to others requires the user to say "push it" or "create the PR."
 
-**Never push directly to main.** Always work on a feature branch (`nil/*`) and create a PR.
+**Never push directly to main.** Always work on a feature branch (`nil-*`) and create a PR.
 
 ## AWS Profiles
 

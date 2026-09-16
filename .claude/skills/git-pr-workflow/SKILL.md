@@ -5,7 +5,7 @@ description: Personal stacked-PR / worktree / PR-creation workflow with the av C
 
 # Git / PR / Stacking Workflow
 
-Reference for stacked-PR work, worktrees, and PR conventions. Generic `av` usage is in the `av-cli` skill; this holds my conventions + the specific hard-won dances. The always-on rules (draft PRs, `nil/*` branches, never-push-without-approval) stay in CLAUDE.md.
+Reference for stacked-PR work, worktrees, and PR conventions. Generic `av` usage is in the `av-cli` skill; this holds my conventions + the specific hard-won dances. The always-on rules (draft PRs, `nil-*` branches, never-push-without-approval) stay in CLAUDE.md.
 
 ## Worktree Commands
 
