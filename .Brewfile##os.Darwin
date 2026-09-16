@@ -7,11 +7,16 @@ brew "mas"
 brew "mise"
 brew "mysql@8.4" # need older version for clear text pw. need to run `fish_add_path /opt/homebrew/opt/mysql@8.4/bin`
 brew "gh"
+brew "colima"
+brew "docker"
+brew "docker-compose"
+brew "kubernetes-cli"
+brew "zellij"
 
 tap "shaunsingh/SFMono-Nerd-Font-Ligaturized"
 cask "font-sf-mono-nerd-font-ligaturized"
 
-cask "flux"
+cask "flux-app"
 cask "sublime-text"
 cask "visual-studio-code"
 cask "ghostty" # experimental
@@ -19,19 +24,33 @@ cask "obsidian"
 cask "google-chrome"
 cask "chatgpt"
 cask "claude"
+cask "codex"
 cask "spotify"
 # cask "windscribe" # this still needs to be manually installed after, so no point
 cask "firefox"
 cask "1password"
-
-# install gcloud but not on all machines..
-# brew install --cask google-cloud-sdk
-# tap "google-cloud-sdk"
-# cask "google-cloud-sdk"
+cask "finicky"
+cask "gcloud-cli"
 
 mas "Magnet", id: 441258766
 mas "Amphetamine", id: 937984704
 mas "Sequel Ace", id: 1518036000
 mas "Slack", id: 803453959
 mas "WhatsApp Messenger", id: 310633997
+mas "keymapp", id: 6472865291
 
+# Work machines only. None of the below is useful without a work checkout and
+# cluster access, so skip this block on the personal machine.
+brew "helm"
+brew "kubeconform"
+brew "libpq"
+brew "mysql-client@8.0"
+brew "sqlc"
+brew "yq"
+
+cask "1password-cli"
+cask "clickhouse"
+cask "ngrok"
+cask "notion"
+cask "tailscale-app"
+cask "zoom"
